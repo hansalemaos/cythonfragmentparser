@@ -1,20 +1,20 @@
-import cython
 cimport cython
-import numpy as np
 cimport numpy as np
+import cython
+
+import numpy as np
+from adbshellexecuter import UniversalADBExecutor
+
 from parifinder import parse_pairs
 from flatten_any_dict_iterable_or_whatsoever import fla_tu
 import subprocess
 import re
-import shutil
 import platform
 import pandas as pd
 from functools import cache
 from itertools import takewhile
 from nested2nested import nested_list_to_nested_dict
-import os
 np.import_array()
-
 iswindows = "win" in platform.system().lower()
 
 if iswindows:
@@ -232,18 +232,13 @@ def execute_sh_command(
     Returns:
     list: The output lines of the command.
     """
-    if serial or iswindows:
-        adb = adb_path or shutil.which("adb")
-        cmdo = adb + " -s " + serial + " shell "
-    else:
-        cmdo = ""
-    if iswindows or serial:
-        p = subprocess.run(
-            cmdo, shell=subproc_shell, input=command.encode("utf-8"), capture_output=True, env=os.environ, **invisibledict
+    adbsh=UniversalADBExecutor(adb_path,serial)
+    stdout, stderr, returncode = (
+        adbsh.shell_with_capturing_import_stdout_and_stderr(
+            command=command
         )
-    else:
-        p = subprocess.run(command, shell=subproc_shell, capture_output=True, env=os.environ)
-    return p.stdout.strip().splitlines()
+    )
+    return stdout.strip().splitlines()
 
 def lenq(q):
     """

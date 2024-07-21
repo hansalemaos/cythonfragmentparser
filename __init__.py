@@ -4,7 +4,7 @@ try:
     from .cyfragmentparser import *
 
 except Exception as e:
-    import Cython, UniversalADBExecutor, setuptools, flatten_any_dict_iterable_or_whatsoever, pandas, numpy, parifinder, nested2nested, platform, subprocess, os, sys, time
+    import Cython, adbshellexecuter, setuptools, flatten_any_dict_iterable_or_whatsoever, pandas, numpy, parifinder, nested2nested, platform, subprocess, os, sys, time
 
     iswindows = "win" in platform.platform().lower()
     if iswindows:
